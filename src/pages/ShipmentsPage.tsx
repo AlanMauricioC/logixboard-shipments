@@ -50,7 +50,7 @@ const COLUMNS: GridColDef[] = [
 const useStyles = makeStyles({
     grid: {
         marginInline: 16,
-        height: '100%'
+        height: '90vh'
     },
     loader: {
         margin: 'auto',

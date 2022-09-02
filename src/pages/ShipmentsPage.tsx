@@ -82,7 +82,7 @@ export const ShipmentsPage: React.FC = () => {
                 className={classes.grid}
                 rows={fetchShipmentsResult.shipments}
                 columns={COLUMNS}
-                pageSize={20}
+                autoPageSize
                 disableSelectionOnClick
             />
             break;

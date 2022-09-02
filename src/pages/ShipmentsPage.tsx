@@ -47,10 +47,12 @@ const COLUMNS: GridColDef[] = [
     }
 ]
 
+const headbarHeight='70px'
 const useStyles = makeStyles({
     grid: {
         marginInline: 16,
-        height: '90vh'
+        height: `calc(100vh - ${headbarHeight} )`,
+	minHeight: '170px'
     },
     loader: {
         margin: 'auto',

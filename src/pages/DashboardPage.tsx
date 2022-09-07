@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react'
 import { format } from 'date-fns'
-import { Box } from '@material-ui/core'
-import Grid from '@material-ui/core/Grid'
+import { Grid, Box, useTheme, makeStyles } from '@material-ui/core'
 import { fetchShipments, FetchShipmentsResult } from '../data/fetch-shipments'
 import Loader from 'react-loader-spinner'
 import { Shipment } from '../data/Shipment'
 import { DayCard } from '../components/DayCard'
-import { makeStyles } from '@material-ui/core'
 
 type LoadingResult = {
     status: 'LOADING'
@@ -19,6 +17,12 @@ const INITIAL_RESULT: LoadingResult = {
 const useStyles = makeStyles({
     dayConainer: {
         marginTop: 20,
+    },
+
+    loader: {
+        margin: 'auto',
+        width: 'fit-content',
+        marginTop: 200,
     },
 })
 
@@ -43,6 +47,7 @@ export const DashboardPage: React.FC = () => {
         fetchShipments().then((result) => setFetchShipmentsResult(result))
     }, [])
 
+    const theme = useTheme()
     const classes = useStyles()
     const nextDays = getNextWeek()
 
@@ -52,8 +57,8 @@ export const DashboardPage: React.FC = () => {
 
     if (fetchShipmentsResult.status === 'LOADING') {
         return (
-            <Box>
-                <Loader type="Grid" />
+            <Box className={classes.loader}>
+                <Loader color={theme.palette.primary.main} type="Grid" />
             </Box>
         )
     }

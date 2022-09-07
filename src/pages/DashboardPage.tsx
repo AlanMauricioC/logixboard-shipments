@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
 import { format } from 'date-fns'
-import { Box, Container } from '@material-ui/core'
+import { Box } from '@material-ui/core'
 import Grid from '@material-ui/core/Grid'
 import { fetchShipments, FetchShipmentsResult } from '../data/fetch-shipments'
 import Loader from 'react-loader-spinner'
 import { Shipment } from '../data/Shipment'
 import { DayCard } from '../components/DayCard'
+import { makeStyles } from '@material-ui/core'
 
 type LoadingResult = {
     status: 'LOADING'
@@ -14,6 +15,12 @@ type LoadingResult = {
 const INITIAL_RESULT: LoadingResult = {
     status: 'LOADING',
 }
+
+const useStyles = makeStyles({
+    dayConainer: {
+        marginTop: 20,
+    },
+})
 
 function getNextWeek(): Array<Date> {
     let nextDays = []
@@ -36,6 +43,7 @@ export const DashboardPage: React.FC = () => {
         fetchShipments().then((result) => setFetchShipmentsResult(result))
     }, [])
 
+    const classes = useStyles()
     const nextDays = getNextWeek()
 
     if (fetchShipmentsResult.status === 'ERROR') {
@@ -53,24 +61,28 @@ export const DashboardPage: React.FC = () => {
     const date = new Date()
     date.setDate(date.getDate())
 
-    console.log(
-        fetchShipmentsResult.shipments.filter(
-            (shipment) => shipment.estimatedArrival == format(date, 'MM/dd/yy')
-        )
-    )
     const getShipmentsByDate = (date: Date): Array<Shipment> => {
         const shipmentsByDate = fetchShipmentsResult.shipments.filter(
-            (shipment) => shipment.estimatedArrival == format(date, 'MM/dd/yy')
+            (shipment) => shipment.estimatedArrival === format(date, 'MM/dd/yy')
         )
         return shipmentsByDate
     }
 
     return (
-        <Container>
+        <div>
             <h1>Next Arrivals</h1>
-            <Grid container spacing={3} justifyContent="flex-start">
+            <Grid container spacing={3}>
                 {nextDays.map((day) => (
-                    <Grid key={day.getTime()} item xs={12} sm={6} md={4} lg={3}>
+                    <Grid
+                        className={classes.dayConainer}
+                        key={day.getTime()}
+                        item
+                        xs={12}
+                        sm={6}
+                        md={4}
+                        lg={3}
+                        xl={2}
+                    >
                         <DayCard
                             date={day}
                             shipments={getShipmentsByDate(day)}
@@ -78,6 +90,6 @@ export const DashboardPage: React.FC = () => {
                     </Grid>
                 ))}
             </Grid>
-        </Container>
+        </div>
     )
 }

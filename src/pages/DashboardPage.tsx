@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
 import { format } from 'date-fns'
-import { Box, Paper } from '@material-ui/core'
+import { Box, Container } from '@material-ui/core'
 import Grid from '@material-ui/core/Grid'
 import { fetchShipments, FetchShipmentsResult } from '../data/fetch-shipments'
 import Loader from 'react-loader-spinner'
+import { Shipment } from '../data/Shipment'
+import { DayCard } from '../components/DayCard'
 
 type LoadingResult = {
     status: 'LOADING'
@@ -14,17 +16,7 @@ const INITIAL_RESULT: LoadingResult = {
 }
 
 function getNextWeek(): Array<Date> {
-    const days = [
-        'Sunday',
-        'Monday',
-        'Tuesday',
-        'Wednesday',
-        'Thursday',
-        'Friday',
-        'Saturday',
-    ]
-
-    const nextDays = []
+    let nextDays = []
 
     for (let i = 0; i < 7; i++) {
         const today = new Date()
@@ -58,18 +50,34 @@ export const DashboardPage: React.FC = () => {
         )
     }
 
+    const date = new Date()
+    date.setDate(date.getDate())
+
+    console.log(
+        fetchShipmentsResult.shipments.filter(
+            (shipment) => shipment.estimatedArrival == format(date, 'MM/dd/yy')
+        )
+    )
+    const getShipmentsByDate = (date: Date): Array<Shipment> => {
+        const shipmentsByDate = fetchShipmentsResult.shipments.filter(
+            (shipment) => shipment.estimatedArrival == format(date, 'MM/dd/yy')
+        )
+        return shipmentsByDate
+    }
+
     return (
-        <div>
+        <Container>
             <h1>Next Arrivals</h1>
             <Grid container spacing={3} justifyContent="flex-start">
                 {nextDays.map((day) => (
-                    <Grid key={day.getTime()} item xs={12} sm={6}>
-                        <Paper>
-                            <h3>{day.getDate()}</h3>
-                        </Paper>
+                    <Grid key={day.getTime()} item xs={12} sm={6} md={4} lg={3}>
+                        <DayCard
+                            date={day}
+                            shipments={getShipmentsByDate(day)}
+                        />
                     </Grid>
                 ))}
             </Grid>
-        </div>
+        </Container>
     )
 }
